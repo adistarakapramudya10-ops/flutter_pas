@@ -1,55 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_pas/pages/MainMenu_page.dart';
-import 'package:flutter_pas/models/login_model.dart'; 
+import 'package:flutter_pas/routes.dart';
+import 'package:flutter_pas/models/login_model.dart';
 
 class LoginController extends GetxController {
-
   final TextEditingController txtUsername = TextEditingController();
   final TextEditingController txtPassword = TextEditingController();
 
   var isLoading = false.obs;
-
-  var loginModel = Rxn<LoginModel>(); 
+  var loginModel = Rxn<LoginModel>();
 
   void login() async {
-    if (txtUsername.text.toString().isEmpty || txtPassword.text.toString().isEmpty) {
-      Get.snackbar("error", "username dan password harus terisi");
-    } else {
-      try {
-        isLoading.value = true;
+    if (txtUsername.text.trim().isEmpty || txtPassword.text.trim().isEmpty) {
+      Get.snackbar("Error", "Username dan password harus terisi");
+      return;
+    }
 
-        final url = Uri.parse("https://mediadwi.com/api/latihan/login");
+    try {
+      isLoading.value = true;
 
-        final response = await http.post(
-          url,
-          body: {
-            "username": txtUsername.text.toString(),
-            "password": txtPassword.text.toString(),
-          },
-        );
+      final url = Uri.parse("https://mediadwi.com/api/latihan/login");
 
-        isLoading.value = false;
+      final response = await http.post(
+        url,
+        body: {
+          "username": txtUsername.text.trim(),
+          "password": txtPassword.text.trim(),
+        },
+      );
 
-        if (response.statusCode == 200) {
+      isLoading.value = false;
 
-          loginModel.value = loginModelFromJson(response.body);
+      if (response.statusCode == 200) {
+        loginModel.value = loginModelFromJson(response.body);
 
-          if (loginModel.value?.status == true) {
-            Get.snackbar("berhasil", loginModel.value?.message ?? "Login success");
-            Get.offAll(() => MainMenuPage());
-          } else {
-            Get.snackbar("gagal", loginModel.value?.message ?? "Login gagal");
-          }
+        if (loginModel.value?.status == true) {
+          Get.snackbar("Berhasil", loginModel.value?.message ?? "Login success");
+          Get.offAllNamed(Routes.mainMenu);
         } else {
-          Get.snackbar("error", "cek internet connection / server error");
+          Get.snackbar("Gagal", loginModel.value?.message ?? "Login gagal");
         }
-      } catch (e) {
-        isLoading.value = false;
-        Get.snackbar("gagal", e.toString());
-        debugPrint("error: " + e.toString());
+      } else {
+        Get.snackbar("Error", "Cek koneksi internet / server error");
       }
+    } catch (e) {
+      isLoading.value = false;
+      Get.snackbar("Gagal", e.toString());
+      debugPrint("error: $e");
     }
   }
 }

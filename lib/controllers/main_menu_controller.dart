@@ -12,6 +12,6 @@ class MainMenuController extends GetxController {
     selectedIndex.value = index;
   }
 
-  List<Widget> listPages = [HomePage(),ProfilePage(),FeatPage()];
+  List<Widget> listPages = [HomePage(),FeatPage(),ProfilePage()];
 
 }

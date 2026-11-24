@@ -1,46 +1,79 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_pas/models/makanan_model.dart';
 
-class HomeController {
+class HomeController extends GetxController {
+  var pesananList = <PesananModel>[].obs;
+
   final List<MakananModel> listMakanan = [
     MakananModel(
-      namaMakanan: "Soto Ayam",
-      hargaMakanan: "Rp 10.000",
-      gambarMakanan: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6EoVEfu1C8popa1SkRST0Dac12eHROQcRvFjdUMk1-oHRnB7yBNF9U8Q&s=10",
-      deskripsiMakanan: "Soto ayam kuah bening gurih dengan suwiran ayam segar.",
-      ratingMakanan: 5,
-      reviewMakanan: "Sangat lezat dan kuahnya hangat!",
-    ),
-    MakananModel(
-      namaMakanan: "Lentog",
+      namaMakanan: "Nasi Goreng Spesial",
       hargaMakanan: "Rp 25.000",
-      gambarMakanan: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1Lt3YlNoDigYtJnV4cppXzx2_RH9aPjl4CpRnjrP0HUKcou6Q7SSUOfco&s=10",
-      deskripsiMakanan: "Makanan khas dengan tahu, tempe, dan lodeh kental.",
-      ratingMakanan: 4,
-      reviewMakanan: "Mantap untuk sarapan.",
-    ),
-    MakananModel(
-      namaMakanan: "Pindang Kerbau",
-      hargaMakanan: "Rp 25.000",
-      gambarMakanan: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScWJMUwwqF5o7FTJopR8Pch2KNRHL27cDtQH7MABN8OzlHlltVbjDkShU&s=10",
-      deskripsiMakanan: "Nasi pindang daging kerbau dengan daun melinjo khas.",
+      harga: 25000,
+      gambarMakanan: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=500",
+      deskripsiMakanan: "Nasi goreng bumbu rempah dengan telur mata sapi, ayam suwir, dan kerupuk.",
       ratingMakanan: 5,
-      reviewMakanan: "Dagingnya empuk banget!",
+      reviewMakanan: "Bumbu rempahnya terasa banget, porsinya pas!",
     ),
     MakananModel(
-      namaMakanan: "Jenang",
-      hargaMakanan: "Rp 18.000",
-      gambarMakanan: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIW34lla77fm1B3hlfhCmrHwNqusJ0uHJZQ6lA&s=10",
-      deskripsiMakanan: "Jenang legit manis cocok untuk oleh-oleh.",
-      ratingMakanan: 4,
-      reviewMakanan: "Manisnya pas di lidah.",
-    ),
-    MakananModel(
-      namaMakanan: "Bolang - Baling",
-      hargaMakanan: "Rp 6.000",
-      gambarMakanan: "https://i0.wp.com/resepkoki.id/wp-content/uploads/2018/04/Resep-Odading.jpg?fit=1401%2C1144&ssl=1",
-      deskripsiMakanan: "Roti goreng empuk bertabur wijen manis.",
+      namaMakanan: "Ayam Bakar Madu",
+      hargaMakanan: "Rp 30.000",
+      harga: 30000,
+      gambarMakanan: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=500",
+      deskripsiMakanan: "Ayam bakar olesan madu murni lengkap dengan sambal terasi dan lalapan.",
       ratingMakanan: 5,
-      reviewMakanan: "Enak buat ngemil sore.",
+      reviewMakanan: "Manis madunya meresap sampai ke tulang, sambalnya mantap.",
+    ),
+    MakananModel(
+      namaMakanan: "Sate Ayam Madura",
+      hargaMakanan: "Rp 28.000",
+      harga: 28000,
+      gambarMakanan: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500",
+      deskripsiMakanan: "10 tusuk sate ayam daging pilihan dengan siraman bumbu kacang kental.",
+      ratingMakanan: 5,
+      reviewMakanan: "Daging ayamnya empuk dan bumbu kacangnya medok.",
+    ),
+    MakananModel(
+      namaMakanan: "Mie Ayam Bakso",
+      hargaMakanan: "Rp 20.000",
+      harga: 20000,
+      gambarMakanan: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=500",
+      deskripsiMakanan: "Mie kenyal dengan topping ayam kecap, sawi hijau, dan 2 butir bakso sapi.",
+      ratingMakanan: 4,
+      reviewMakanan: "Mienya kenyal dan baksonya terasa daging sapinya.",
+    ),
+    MakananModel(
+      namaMakanan: "Es Teh Manis Jumbo",
+      hargaMakanan: "Rp 8.000",
+      harga: 8000,
+      gambarMakanan: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500",
+      deskripsiMakanan: "Minuman teh melati segar dengan gula asli dan es batu kristal.",
+      ratingMakanan: 5,
+      reviewMakanan: "Segar banget diminum pas siang hari, ukurannya jumbo.",
     ),
   ];
+
+  void bayarMakanan(MakananModel makanan, int jumlah, double subtotal, double ppn, double totalBayar) {
+    pesananList.add(PesananModel(
+      makanan: makanan,
+      jumlah: jumlah,
+      totalHarga: totalBayar,
+    ));
+
+    Get.defaultDialog(
+      title: "Pembayaran Berhasil! 🎉",
+      middleText:
+          "Menu: ${makanan.namaMakanan} ($jumlah x)\n"
+          "Subtotal: Rp ${subtotal.toInt()}\n"
+          "PPN (5%): Rp ${ppn.toInt()}\n"
+          "Total Bayar: Rp ${totalBayar.toInt()}",
+      textConfirm: "Selesai",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.green.shade600,
+      onConfirm: () {
+        Get.back(); // Tutup dialog
+        Get.back(); // Kembali ke halaman Home
+      },
+    );
+  }
 }
